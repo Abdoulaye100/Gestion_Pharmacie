@@ -18,6 +18,8 @@ Route::prefix('admin')->group(function () {
 
     Route::get('/medicaments', [\App\Http\Controllers\MedicamentController::class, 'index'])->name('medicaments');
 
+    Route::post('/medicaments', [\App\Http\Controllers\MedicamentController::class, 'store'])->name('medicaments.store');
+
     Route::get('/categories', function () {
         return view('admin.categories');
     })->name('categories');
@@ -25,10 +27,6 @@ Route::prefix('admin')->group(function () {
     Route::get('/ventes', function () {
         return view('admin.ventes');
     })->name('ventes');
-
-    Route::get('/factures', function () {
-        return view('admin.factures');
-    })->name('factures');
 
     Route::get('/utilisateurs', function () {
         return view('admin.utilisateurs');

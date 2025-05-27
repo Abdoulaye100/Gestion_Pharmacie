@@ -39,12 +39,24 @@
             padding-left: 30px;
             box-shadow: 0 2px 8px -4px #00000022;
         }
+        .admin-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        .admin-content::-webkit-scrollbar-thumb {
+            background: #000;
+            border-radius: 6px;
+        }
+        .admin-content::-webkit-scrollbar-track {
+            background: #e9ecef;
+            border-radius: 6px;
+        }
     </style>
 </head>
 <body style="margin: 0; padding: 0; height: 100vh; overflow: hidden">
     <section style="display: flex; flex-direction: column; height: 100%; margin: 0; padding: 0">
-        <header class="admin-header">
+        <header class="admin-header d-flex justify-content-between align-items-center">
             <h1 class="fw-bold mb-0"><i class="bi bi-capsule-pill me-2"></i>Gestion de Pharmacie</h1>
+            <span class="badge rounded-pill bg-success fs-6 px-4 py-2 shadow-sm" style="letter-spacing:1px; font-weight:600; margin-right: 30px; background: linear-gradient(90deg, #198754 70%, #43e97b 100%); color: #fff;"><i class="bi bi-person-gear me-1"></i> Admin</span>
         </header>
         <div style="display: flex; min-height: 90%">
             <nav class="sidebar d-flex flex-column p-4" style="width: 60%; max-width:250px;">
@@ -70,18 +82,13 @@
                         </a>
                     </li>
                     <li class="nav-item mb-2">
-                        <a class="nav-link @if(request()->routeIs('factures')) active @endif" href="{{ route('factures') }}">
-                            <i class="bi bi-receipt"></i> Factures
-                        </a>
-                    </li>
-                    <li class="nav-item mb-2">
                         <a class="nav-link @if(request()->routeIs('utilisateurs')) active @endif" href="{{ route('utilisateurs') }}">
                             <i class="bi bi-people"></i> Utilisateurs
                         </a>
                     </li>
                 </ul>
             </nav>
-            <main class="admin-content" style="padding: 10px; width: 100%">
+            <main class="admin-content" style="padding: 10px; width: 100%; height: 100vh; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #43e97b #e9ecef;">
                 <div class="container">
                     @yield('content')
                 </div>
