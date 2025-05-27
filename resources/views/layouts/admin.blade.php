@@ -7,48 +7,80 @@
     <title>@yield('title') - Administration</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
-        .csp{
+        .sidebar {
+            background: linear-gradient(135deg, #198754 60%, #43e97b 100%);
+            min-height: 100vh;
+            color: #fff;
+            box-shadow: 0 0 16px -10px #00000044;
+        }
+        .sidebar .nav-link {
+            color: #fff;
+            font-weight: 500;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: background 0.2s;
+        }
+        .sidebar .nav-link.active, .sidebar .nav-link:hover {
+            background: rgba(255,255,255,0.12);
+            color: #fff;
+        }
+        .sidebar .bi {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        .admin-header {
+            background: linear-gradient(90deg, #198754 70%, #43e97b 100%);
+            color: #fff;
+            min-height: 70px;
             display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        span{
-            padding: 10px;
-            cursor: pointer;
-        }
-        span a{
-            display: block;
-            height: 20px;
-        }
-        span:hover{
-            background-color: rgba(128, 128, 128, 0.301);
-            transition: 0.5s;
-        }
-
-        a{
-            text-decoration: none;
-            color: white;
+            align-items: center;
+            padding-left: 30px;
+            box-shadow: 0 2px 8px -4px #00000022;
         }
     </style>
 </head>
 <body style="margin: 0; padding: 0; height: 100vh; overflow: hidden">
     <section style="display: flex; flex-direction: column; height: 100%; margin: 0; padding: 0">
-        <header class="admin-header" style="background-color: rgba(0, 128, 0, 0.795); color: white; min-height: 10%;display: flex; align-items: center">
-                <h1>Gestion de Pharmacie</h1>
+        <header class="admin-header">
+            <h1 class="fw-bold mb-0"><i class="bi bi-capsule-pill me-2"></i>Gestion de Pharmacie</h1>
         </header>
         <div style="display: flex; min-height: 90%">
-            <nav class="admin-nav" style="width: 60%; height: 100%; background: green; max-width:250px; box-shadow: 0 0 16px -10px black;">
-                <div class="csp" style="margin-top: 70px">
-                    <span><a href="{{ route('dashboard') }}">Dashboard</a></span>
-                    <span><a href="{{ route('medicaments') }}">Médicaments</a></span>
-                    <span><a href="{{ route('categories') }}">Catégories</a></span>
-                    <span><a href="{{ route('ventes') }}">Ventes</a></span>
-                    <span><a href="{{ route('factures') }}">Factures</a></span>
-                    <span><a href="{{ route('utilisateurs') }}">Utilisateurs</a></span>
-                </div>
+            <nav class="sidebar d-flex flex-column p-4" style="width: 60%; max-width:250px;">
+                <ul class="nav flex-column mt-4">
+                    <li class="nav-item mb-2">
+                        <a class="nav-link @if(request()->routeIs('dashboard')) active @endif" href="{{ route('dashboard') }}">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a class="nav-link @if(request()->routeIs('medicaments')) active @endif" href="{{ route('medicaments') }}">
+                            <i class="bi bi-capsule"></i> Médicaments
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a class="nav-link @if(request()->routeIs('categories')) active @endif" href="{{ route('categories') }}">
+                            <i class="bi bi-tags"></i> Catégories
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a class="nav-link @if(request()->routeIs('ventes')) active @endif" href="{{ route('ventes') }}">
+                            <i class="bi bi-cart4"></i> Ventes
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a class="nav-link @if(request()->routeIs('factures')) active @endif" href="{{ route('factures') }}">
+                            <i class="bi bi-receipt"></i> Factures
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a class="nav-link @if(request()->routeIs('utilisateurs')) active @endif" href="{{ route('utilisateurs') }}">
+                            <i class="bi bi-people"></i> Utilisateurs
+                        </a>
+                    </li>
+                </ul>
             </nav>
-        
             <main class="admin-content" style="padding: 10px; width: 100%">
                 <div class="container">
                     @yield('content')
@@ -56,7 +88,6 @@
             </main>
         </div>
     </section>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html> 

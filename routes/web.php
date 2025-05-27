@@ -16,9 +16,7 @@ Route::prefix('admin')->group(function () {
         return view('admin.dashboard');
     })->name('dashboard');
 
-    Route::get('/medicaments', function () {
-        return view('admin.medicaments');
-    })->name('medicaments');
+    Route::get('/medicaments', [\App\Http\Controllers\MedicamentController::class, 'index'])->name('medicaments');
 
     Route::get('/categories', function () {
         return view('admin.categories');
