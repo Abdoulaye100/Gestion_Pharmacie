@@ -1,0 +1,39 @@
+.inp-p {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.5rem;
+  background-color: white;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.inp-p:hover {
+  border-color: #a5fcac;
+}
+
+.inp-p:focus {
+  outline: none;
+  border-color: #6ff163;
+  box-shadow: 0 0 0 4px rgba(99, 241, 99, 0.2);
+}
+
+.inp-p::placeholder {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.tableMedicament table{
+  width: 100%;
+  margin-top: 40px;
+  border-collapse: collapse;
+}
+
+.tableMedicament td{
+  padding: 15px;
+}
+.tableMedicament th{
+  padding: 5px;
+}
+.tableMedicament td,th{
+  border: solid 1px;
+}
