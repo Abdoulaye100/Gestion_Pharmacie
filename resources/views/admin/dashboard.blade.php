@@ -58,11 +58,19 @@
                             </div>
                             <h5 class="card-title mb-0">Ventes</h5>
                         </div>
-                        <div class="mb-2">
-                            <span class="fw-bold fs-4 text-info">38</span> <span class="text-muted">aujourd'hui</span>
+                        <div class="mb-2 d-flex justify-content-between">
+                            <div>
+                                <span class="fw-bold fs-4 text-info">38</span> <span class="text-muted">aujourd'hui</span>
+                            </div>
+                          
+                            <span class="fw-bold text-success"><i class="bi bi-currency-dollar"></i> 54 200 FCFA</span>
                         </div>
-                        <div>
-                            <span class="fw-bold fs-5 text-primary">1 245</span> <span class="text-muted">ce mois</span>
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <span class="fw-bold fs-5 text-primary">1 245</span> <span class="text-muted">ce mois</span>
+                            </div>
+                          
+                            <span class="fw-bold text-success"><i class="bi bi-currency-dollar"></i> 1 650 000 FCFA</span>
                         </div>
                     </div>
                 </div>

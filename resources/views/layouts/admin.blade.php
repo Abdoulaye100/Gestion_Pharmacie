@@ -72,7 +72,7 @@
                         </a>
                     </li>
                     <li class="nav-item mb-2">
-                        <a class="nav-link @if(request()->routeIs('categories')) active @endif" href="{{ route('categories') }}">
+                        <a class="nav-link @if(request()->routeIs('categories')) active @endif" href="{{ route('categories.index') }}">
                             <i class="bi bi-tags"></i> Catégories
                         </a>
                     </li>
@@ -84,6 +84,11 @@
                     <li class="nav-item mb-2">
                         <a class="nav-link @if(request()->routeIs('utilisateurs')) active @endif" href="{{ route('utilisateurs') }}">
                             <i class="bi bi-people"></i> Utilisateurs
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a class="nav-link @if(request()->routeIs('fournisseurs')) active @endif" href="{{ route('fournisseurs.index') }}">
+                            <i class="bi bi-truck"></i> Fournisseurs
                         </a>
                     </li>
                 </ul>

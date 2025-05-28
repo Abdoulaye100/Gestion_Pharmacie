@@ -20,9 +20,10 @@ Route::prefix('admin')->group(function () {
 
     Route::post('/medicaments', [\App\Http\Controllers\MedicamentController::class, 'store'])->name('medicaments.store');
 
-    Route::get('/categories', function () {
-        return view('admin.categories');
-    })->name('categories');
+    // Route::get('/categories', function () {
+    //     return view('admin.categories');
+    // })->name('categories');
+    Route::resource('categories', \App\Http\Controllers\CategorieController::class)->except(['show', 'create', 'edit']);
 
     Route::get('/ventes', function () {
         return view('admin.ventes');
@@ -31,4 +32,6 @@ Route::prefix('admin')->group(function () {
     Route::get('/utilisateurs', function () {
         return view('admin.utilisateurs');
     })->name('utilisateurs');
+
+    Route::resource('fournisseurs', \App\Http\Controllers\FournisseurController::class)->except(['show', 'create', 'edit']);
 });
