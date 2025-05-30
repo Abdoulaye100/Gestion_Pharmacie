@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title') - Administration</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
@@ -67,12 +68,12 @@
                         </a>
                     </li>
                     <li class="nav-item mb-2">
-                        <a class="nav-link @if(request()->routeIs('medicaments')) active @endif" href="{{ route('medicaments') }}">
+                        <a class="nav-link @if(request()->routeIs('medicaments')) active @endif" href="{{ route('medicaments.index') }}">
                             <i class="bi bi-capsule"></i> Médicaments
                         </a>
                     </li>
                     <li class="nav-item mb-2">
-                        <a class="nav-link @if(request()->routeIs('categories')) active @endif" href="{{ route('categories') }}">
+                        <a class="nav-link @if(request()->routeIs('categories')) active @endif" href="{{ route('categories.index') }}">
                             <i class="bi bi-tags"></i> Catégories
                         </a>
                     </li>
@@ -84,6 +85,11 @@
                     <li class="nav-item mb-2">
                         <a class="nav-link @if(request()->routeIs('utilisateurs')) active @endif" href="{{ route('utilisateurs') }}">
                             <i class="bi bi-people"></i> Utilisateurs
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a class="nav-link @if(request()->routeIs('fournisseurs')) active @endif" href="{{ route('fournisseurs.index') }}">
+                            <i class="bi bi-truck"></i> Fournisseurs
                         </a>
                     </li>
                 </ul>

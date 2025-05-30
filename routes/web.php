@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategorieController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -16,13 +17,9 @@ Route::prefix('admin')->group(function () {
         return view('admin.dashboard');
     })->name('dashboard');
 
-    Route::get('/medicaments', [\App\Http\Controllers\MedicamentController::class, 'index'])->name('medicaments');
+    Route::resource('medicaments', \App\Http\Controllers\MedicamentController::class)->only(['index', 'store', 'update', 'destroy']);
 
-    Route::post('/medicaments', [\App\Http\Controllers\MedicamentController::class, 'store'])->name('medicaments.store');
-
-    Route::get('/categories', function () {
-        return view('admin.categories');
-    })->name('categories');
+    Route::resource('categories', \App\Http\Controllers\CategorieController::class)->only(['index', 'store', 'update', 'destroy']);
 
     Route::get('/ventes', function () {
         return view('admin.ventes');
@@ -31,4 +28,6 @@ Route::prefix('admin')->group(function () {
     Route::get('/utilisateurs', function () {
         return view('admin.utilisateurs');
     })->name('utilisateurs');
+
+    Route::resource('fournisseurs', \App\Http\Controllers\FournisseurController::class)->except(['show', 'create', 'edit']);
 });
