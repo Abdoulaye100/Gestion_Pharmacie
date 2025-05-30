@@ -83,7 +83,7 @@
                         </a>
                     </li>
                     <li class="nav-item mb-2">
-                        <a class="nav-link @if(request()->routeIs('utilisateurs')) active @endif" href="{{ route('utilisateurs') }}">
+                        <a class="nav-link @if(request()->routeIs('utilisateurs')) active @endif" href="{{ route('utilisateurs.index') }}">
                             <i class="bi bi-people"></i> Utilisateurs
                         </a>
                     </li>
