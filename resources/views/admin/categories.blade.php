@@ -12,7 +12,7 @@
         </div>
         <div class="row mb-3">
             <div class="col-md-6">
-                <form class="d-flex" action="" method="GET">
+                <form class="d-flex" id="search-categorie-form" action="{{ route('categories.index') }}" method="GET">
                     <input type="text" class="form-control me-2" name="q" placeholder="Rechercher une catégorie...">
                     <button class="btn btn-outline-success" type="submit">Rechercher</button>
                 </form>
@@ -29,56 +29,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($categories as $categorie)
-                        <tr>
-                            <td class="fw-semibold">{{ $categorie->nom }}</td>
-                            <td class="text-muted">{{ $categorie->description }}</td>
-                            <td>{{ $categorie->created_at->format('d/m/Y') }}</td>
-                            <td>
-                                <!-- Bouton Modifier -->
-                                <button class="btn btn-outline-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#editCategorieModal{{ $categorie->id }}"><i class="bi bi-pencil"></i></button>
-                                <!-- Modal Edition -->
-                                <div class="modal fade" id="editCategorieModal{{ $categorie->id }}" tabindex="-1" aria-labelledby="editCategorieModalLabel{{ $categorie->id }}" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header bg-success text-white">
-                                                <h5 class="modal-title" id="editCategorieModalLabel{{ $categorie->id }}"><i class="bi bi-pencil"></i> Modifier la catégorie</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <form method="POST" action="{{ route('categories.update', $categorie) }}">
-                                                @csrf
-                                                @method('PUT')
-                                                <div class="modal-body row g-3">
-                                                    <div class="col-12">
-                                                        <label for="nom{{ $categorie->id }}" class="form-label">Nom de la catégorie</label>
-                                                        <input type="text" class="form-control" id="nom{{ $categorie->id }}" name="nom" value="{{ $categorie->nom }}" required>
-                                                    </div>
-                                                    <div class="col-12">
-                                                        <label for="description{{ $categorie->id }}" class="form-label">Description</label>
-                                                        <textarea class="form-control" id="description{{ $categorie->id }}" name="description" rows="2">{{ $categorie->description }}</textarea>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                                                    <button type="submit" class="btn btn-success">Enregistrer</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Bouton Supprimer -->
-                                <form action="{{ route('categories.destroy', $categorie) }}" method="POST" style="display:inline-block">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i></button>
-                                </form>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4" class="text-center text-muted">Aucune catégorie trouvée.</td>
-                        </tr>
-                    @endforelse
+                    @include('admin.partials.categories_tbody', ['categories' => $categories])
                 </tbody>
             </table>
         </div>
@@ -111,6 +62,8 @@
                 </div>
             </div>
         </div>
+
+        {{-- Modals de modification (ils sont maintenant générés dans la boucle du tableau via la vue partielle) --}}
     </section>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <!-- SweetAlert2 -->
@@ -133,59 +86,71 @@
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const form = document.querySelector('#ajoutCategorieModal form');
+            const ajoutForm = document.querySelector('#ajoutCategorieModal form');
             const spinner = document.getElementById('categorie-spinner');
-            form.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                spinner.style.display = 'flex';
-                const formData = new FormData(form);
-                try {
-                    const response = await fetch(form.action, {
-                        method: 'POST',
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value
-                        },
-                        body: formData
-                    });
-                    spinner.style.display = 'none';
-                    if (response.ok) {
-                        const data = await response.json();
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Succès',
-                            text: data.message || 'Catégorie ajoutée avec succès !',
-                            timer: 2000,
-                            showConfirmButton: false
+            const searchForm = document.getElementById('search-categorie-form');
+            const tableBody = document.querySelector('#search-categorie-form').closest('.container').querySelector('table tbody');
+
+            // 🔄 AJOUT CATEGORIE
+            if (ajoutForm) {
+                ajoutForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    spinner.style.display = 'flex';
+                    const formData = new FormData(ajoutForm);
+
+                    try {
+                        const response = await fetch(ajoutForm.action, {
+                            method: 'POST',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value
+                            },
+                            body: formData
                         });
-                        setTimeout(() => window.location.reload(), 1200);
-                    } else {
-                        const error = await response.json();
+
+                        spinner.style.display = 'none';
+                        const data = await response.json();
+
+                        if (response.ok) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Succès',
+                                text: data.message || 'Catégorie ajoutée avec succès !',
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+                            setTimeout(() => window.location.reload(), 1200);
+                        } else {
+                            const errorData = await response.json();
+                            const errorMessage = errorData.message || 'Erreur lors de l\'ajout.';
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Erreur',
+                                text: errorMessage
+                            });
+                        }
+
+                    } catch (err) {
+                        spinner.style.display = 'none';
                         Swal.fire({
                             icon: 'error',
                             title: 'Erreur',
-                            text: error.message || 'Erreur lors de l\'ajout.'
+                            text: 'Erreur réseau ou serveur.'
                         });
                     }
-                } catch (err) {
-                    spinner.style.display = 'none';
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Erreur',
-                        text: 'Erreur réseau ou serveur.'
-                    });
-                }
-            });
+                });
+            }
 
-            // Gestion AJAX pour la modification
+            // 🔄 MODIFICATION CATEGORIE
             document.querySelectorAll('.modal[id^="editCategorieModal"] form').forEach(function(editForm) {
                 editForm.addEventListener('submit', async function(e) {
                     e.preventDefault();
                     spinner.style.display = 'flex';
                     const formData = new FormData(editForm);
-                    formData.set('_method', 'PUT');
+                    const id = editForm.dataset.id;
+
                     try {
-                        const response = await fetch(editForm.action, {
+                        const response = await fetch(`/admin/categories/${id}`, {
                             method: 'POST',
                             headers: {
                                 'X-Requested-With': 'XMLHttpRequest',
@@ -193,9 +158,11 @@
                             },
                             body: formData
                         });
+
                         spinner.style.display = 'none';
+                        const data = await response.json();
+
                         if (response.ok) {
-                            const data = await response.json();
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Succès',
@@ -205,13 +172,15 @@
                             });
                             setTimeout(() => window.location.reload(), 1200);
                         } else {
-                            const error = await response.json();
+                            const errorData = await response.json();
+                            const errorMessage = errorData.message || 'Erreur lors de la modification.';
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Erreur',
-                                text: error.message || 'Erreur lors de la modification.'
+                                text: errorMessage
                             });
                         }
+
                     } catch (err) {
                         spinner.style.display = 'none';
                         Swal.fire({
@@ -223,88 +192,97 @@
                 });
             });
 
-            // Gestion AJAX pour la suppression
-            document.querySelectorAll('form[action*="categories/"][method="POST"]').forEach(function(deleteForm) {
-                if(deleteForm.querySelector('input[name="_method"][value="DELETE"]')) {
-                    deleteForm.addEventListener('submit', function(e) {
-                        e.preventDefault();
-                        Swal.fire({
-                            title: 'Êtes-vous sûr ?',
-                            text: 'Cette action est irréversible !',
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: '#198754',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'Oui, supprimer',
-                            cancelButtonText: 'Annuler'
-                        }).then(async (result) => {
-                            if (result.isConfirmed) {
-                                spinner.style.display = 'flex';
-                                const formData = new FormData(deleteForm);
-                                formData.set('_method', 'DELETE');
-                                try {
-                                    const response = await fetch(deleteForm.action, {
-                                        method: 'POST',
-                                        headers: {
-                                            'X-Requested-With': 'XMLHttpRequest',
-                                            'X-CSRF-TOKEN': deleteForm.querySelector('input[name=_token]').value
-                                        },
-                                        body: formData
-                                    });
-                                    spinner.style.display = 'none';
-                                    if (response.ok) {
-                                        const data = await response.json();
-                                        Swal.fire({
-                                            icon: 'success',
-                                            title: 'Supprimé',
-                                            text: data.message || 'Catégorie supprimée avec succès !',
-                                            timer: 2000,
-                                            showConfirmButton: false
-                                        });
-                                        setTimeout(() => window.location.reload(), 1200);
-                                    } else {
-                                        const error = await response.json();
-                                        Swal.fire({
-                                            icon: 'error',
-                                            title: 'Erreur',
-                                            text: error.message || 'Erreur lors de la suppression.'
-                                        });
+            // ❌ SUPPRESSION CATEGORIE
+            document.querySelectorAll('.delete-categorie-form').forEach(function(deleteForm) {
+                deleteForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+
+                    Swal.fire({
+                        title: 'Êtes-vous sûr ?',
+                        text: 'Cette action est irréversible !',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Oui, supprimer !',
+                        cancelButtonText: 'Annuler'
+                    }).then(async (result) => {
+                        if (result.isConfirmed) {
+                            spinner.style.display = 'flex';
+                            const id = deleteForm.dataset.id;
+
+                            try {
+                                const response = await fetch(`/admin/categories/${id}`, {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'X-Requested-With': 'XMLHttpRequest',
+                                        'X-CSRF-TOKEN': deleteForm.querySelector('input[name=_token]').value
                                     }
-                                } catch (err) {
-                                    spinner.style.display = 'none';
+                                });
+
+                                spinner.style.display = 'none';
+                                const data = await response.json();
+
+                                if (response.ok) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Supprimé !',
+                                        text: data.message || 'Catégorie supprimée avec succès !',
+                                        timer: 2000,
+                                        showConfirmButton: false
+                                    });
+                                    setTimeout(() => window.location.reload(), 1200);
+                                } else {
+                                    const errorData = await response.json();
+                                    const errorMessage = errorData.message || 'Erreur lors de la suppression.';
                                     Swal.fire({
                                         icon: 'error',
                                         title: 'Erreur',
-                                        text: 'Erreur réseau ou serveur.'
+                                        text: errorMessage
                                     });
                                 }
+
+                            } catch (err) {
+                                spinner.style.display = 'none';
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Erreur',
+                                    text: 'Erreur réseau ou serveur.'
+                                });
                             }
-                        });
+                        }
                     });
-                }
+                });
             });
 
-            // Recherche AJAX
-            const searchForm = document.querySelector('form.d-flex[action=""]');
+            // 🔍 RECHERCHE CATEGORIE
             if (searchForm) {
                 searchForm.addEventListener('submit', async function(e) {
                     e.preventDefault();
                     spinner.style.display = 'flex';
                     const q = searchForm.querySelector('input[name="q"], input[type="text"]').value;
+
                     try {
-                        const response = await fetch(`?q=${encodeURIComponent(q)}`, {
+                        const response = await fetch(`${searchForm.action}?q=${encodeURIComponent(q)}`, {
                             headers: { 'X-Requested-With': 'XMLHttpRequest' }
                         });
+
                         spinner.style.display = 'none';
+
                         if (response.ok) {
                             const html = await response.text();
-                            document.querySelector('table tbody').innerHTML = html;
+                            tableBody.innerHTML = html;
                         } else {
                             Swal.fire({ icon: 'error', title: 'Erreur', text: 'Erreur lors de la recherche.' });
                         }
+
                     } catch (err) {
                         spinner.style.display = 'none';
-                        Swal.fire({ icon: 'error', title: 'Erreur', text: 'Erreur réseau ou serveur.' });
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Erreur',
+                            text: 'Erreur réseau ou serveur.'
+                        });
                     }
                 });
             }
