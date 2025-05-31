@@ -2,16 +2,22 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategorieController;
+use App\Http\Controllers\FournisseurController;
+use App\Http\Controllers\MedicamentController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/login', [AuthController::class, 'login'])->name('login');
+// Routes d'authentification
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Routes d'administration
-Route::prefix('admin')->group(function () {
+Route::prefix('admin')->middleware(['auth'])->group(function () {
                                             
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
@@ -25,9 +31,9 @@ Route::prefix('admin')->group(function () {
         return view('admin.ventes');
     })->name('ventes');
 
-    Route::get('/utilisateurs', function () {
-        return view('admin.utilisateurs');
-    })->name('utilisateurs');
-
     Route::resource('fournisseurs', \App\Http\Controllers\FournisseurController::class)->except(['show', 'create', 'edit']);
+
+    Route::resource('utilisateurs', \App\Http\Controllers\Admin\UserController::class)->only(['index', 'store', 'update', 'destroy']);
 });
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
