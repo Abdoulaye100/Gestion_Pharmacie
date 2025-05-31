@@ -57,7 +57,15 @@
     <section style="display: flex; flex-direction: column; height: 100%; margin: 0; padding: 0">
         <header class="admin-header d-flex justify-content-between align-items-center">
             <h1 class="fw-bold mb-0"><i class="bi bi-capsule-pill me-2"></i>Gestion de Pharmacie</h1>
-            <span class="badge rounded-pill bg-success fs-6 px-4 py-2 shadow-sm" style="letter-spacing:1px; font-weight:600; margin-right: 30px; background: linear-gradient(90deg, #198754 70%, #43e97b 100%); color: #fff;"><i class="bi bi-person-gear me-1"></i> Admin</span>
+            <div class="d-flex align-items-center">
+                <span class="badge rounded-pill bg-success fs-6 px-4 py-2 shadow-sm me-3" style="letter-spacing:1px; font-weight:600; background: linear-gradient(90deg, #198754 70%, #43e97b 100%); color: #fff;"><i class="bi bi-person-gear me-1"></i> Admin</span>
+                <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                    @csrf
+                    <button type="submit" class="btn btn-light btn-sm shadow-sm">
+                        <i class="bi bi-box-arrow-right me-1"></i> Déconnexion
+                    </button>
+                </form>
+            </div>
         </header>
         <div style="display: flex; min-height: 90%">
             <nav class="sidebar d-flex flex-column p-4" style="width: 60%; max-width:250px;">

@@ -11,10 +11,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/login', [AuthController::class, 'login'])->name('login');
+// Routes d'authentification
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Routes d'administration
-Route::prefix('admin')->group(function () {
+Route::prefix('admin')->middleware(['auth'])->group(function () {
                                             
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
@@ -32,3 +35,5 @@ Route::prefix('admin')->group(function () {
 
     Route::resource('utilisateurs', \App\Http\Controllers\Admin\UserController::class)->only(['index', 'store', 'update', 'destroy']);
 });
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
